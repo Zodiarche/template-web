@@ -1,0 +1,47 @@
+label, .label {
+    display: block;
+    // color:
+
+    //    @include from("tablet") {
+    //        font-size: 2rem;
+    //    }
+}
+
+[type="text"], [type="email"], [type="password"], [type="tel"], [type="number"], [type="search"], [type="url"], [type="date"], textarea, select {
+    display: block;
+    width: 100%;
+    background-color: transparent;
+    color: $color-white;
+
+    // font-family:
+    border-bottom: solid 2px black;
+    padding: 1rem 1rem 1rem 0;
+
+    //    @include from("tablet") {
+    //        font-size: 2rem;
+    //    }
+
+    &::placeholder {
+        color: white;
+        // font-family:
+        opacity: 1;
+
+        //        @include from("tablet") {
+        //            font-size: 2rem;
+        //        }
+    }
+}
+
+[type='submit'] {
+    //    @extend .btn;
+}
+
+.wpcf7-acceptance {
+    .wpcf7-list-item {
+        margin-left: 0;
+    }
+}
+
+.field {
+    margin: 1em 0;
+}

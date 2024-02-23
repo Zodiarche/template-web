@@ -1,0 +1,96 @@
+@charset "UTF-8";
+
+$browser-minimum-versions: ("ie": "11");
+
+@import 'normalize';
+$_normalize-exclude: ('table');
+@include normalize();
+
+@import 'breakpoint';
+@import 'breakpoint-slicer';
+
+@import "fonts";
+
+/* Dimensions */
+$max-width: 1280px;
+// $border-width:
+// $header-height:
+
+$slicer-breakpoints: 0 576px 992px $max-width 1600px; // Breakpoints de la V8 de Grillade => https://github.com/alsacreations/KNACSS/blob/master/sass/utils/grillade.scss
+$slicer-breakpoint-names: 'mobile' 'tablet' 'desktop' 'wide' 'widest'; // Breakpoints de la V8 de Grillade
+//                           1        2         3       4       5
+
+//                   mobile    mobile-l  tablet   desktop     wide
+// Breakpoint:   0         480px    768px     1024px     1200px
+//               ├──────────┼─────────┼─────────┼─────────┼───────────>
+// Slice #:            1        2    ·     3         4          5    ·
+//               ·                   ·         ·         ·           ·
+//               ·                   ·         ·  at(4)  ·           ·
+//               ·                   ·         ├─────────┤           ·
+//               ·                   ·         ·         ·           ·
+//               ·                   ·         · from(4) ·           ·
+//               ·                   ·         ├─────────────────────>
+//               ·                   ·                   ·           ·
+//               ·                   ·            to(4)  ·           ·
+//               ├───────────────────────────────────────┤           ·
+//               .                   ·                   .           ·
+//               .                   ·         between(2, 4)         ·
+//               .                   ├───────────────────┤           .
+//               ·                   .                   .           .
+//               ·                   .                   .           .
+//               ·                                           to(5)
+//               ├───────────────────────────────────────────────────>
+//               ·
+//               ·      from(1)
+//               ├───────────────────────────────────────────────────>
+
+/* Couleurs du projet */
+$color-black: black;
+$color-white: white;
+// Les autres couleurs
+
+* { box-sizing: border-box; }
+
+html {
+    height: 100%;
+    font-size: calc(1em * .625);
+    scroll-behavior: smooth; // animation du scroll
+}
+
+body {
+    height: 100%;
+
+    font: {
+        // family:
+        size: 1.5rem;
+        weight: 400; // regular
+    }
+
+    // color:
+    background-color: transparent; // pour Safari IOS
+
+    noscript {
+        div { margin: 0 1em; }
+    }
+
+    //  Bloquer Navigation Menu Burger Landscape
+    &.active { overflow-y: hidden; }
+
+    //  Sticky footer
+    @include from('tablet') {
+        display: flex;
+        flex-direction: column;
+
+        #wrapper{ flex: 1 0 auto; }
+        #footer{ flex-shrink: 0; }
+    }
+
+    @import "grillade"; // https://www.knacss.com/doc.html#grid
+    @import "commons";
+    @import "header";
+    @import "content";
+    @import "footer";
+    @import "swiper";
+
+    &.home { @import "home"; }
+}

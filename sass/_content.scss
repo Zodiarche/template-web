@@ -1,0 +1,151 @@
+main {
+    #{headings(all)}, .h1, .h2, .h3, .h4, .h5, .title {
+        // font-family:
+        // font-weight:
+        // color:
+
+        font-style: normal;
+        line-height: normal;
+
+        br {
+            @include from('desktop') { display: block; }
+            display: none;
+        }
+    }
+
+    h1, .h1 {
+        @include from("desktop") {}
+        // font-family:
+        // font-weight:
+        // font-size:
+        // color:
+
+        a {
+            text-decoration: none;
+
+            // &:hover, &:focus {}
+            // &:active {}
+        }
+    }
+
+    h2, .h2 {
+        @include from("desktop") {}
+        // font-family:
+        // font-weight:
+        // font-size:
+        // color:
+
+        a {
+            text-decoration: none;
+
+            // &:hover, &:focus {}
+            // &:active {}
+        }
+    }
+
+    h3, .h3 {
+        @include from("desktop") {}
+        // font-family:
+        // font-weight:
+        // font-size:
+        // color:
+
+        a {
+            text-decoration: none;
+
+            // &:hover, &:focus {}
+            // &:active {}
+        }
+    }
+
+    h4, .h4 {
+        @include from("desktop") {}
+        // font-family:
+        // font-weight:
+        // font-size:
+        // color:
+
+        a {
+            text-decoration: none;
+
+            // &:hover, &:focus {}
+            // &:active {}
+        }
+    }
+
+    h5, .h5 {
+        @include from("desktop") {}
+        // font-family:
+        // font-weight:
+        // font-size:
+        // color:
+
+        a {
+            text-decoration: none;
+
+            // &:hover, &:focus {}
+            // &:active {}
+        }
+    }
+
+    p, .p { font-size: 1.6rem;}
+
+    p, li, blockquote, td, th, button, address { line-height: 1.6; }
+
+    // ul {
+    //     li {}
+    // }
+
+    //    a:not(.btn):not(.cboxElement):not(.button) {
+    // a:not(.btn) {
+    //            color:;
+
+    //            &:hover, &:focus {color:}
+    //            &:active {color:}
+    // }
+
+    img {
+        &.float-right, &.alignright {
+            margin: {
+                left: 2rem;
+                bottom: 2rem;
+            }
+        }
+
+        &.float-left, &.alignleft {
+            margin: {
+                right: 2rem;
+                bottom: 2rem;
+            }
+        }
+
+        &.aligncenter { display: block; }
+    }
+
+    // strong, b {}
+
+    blockquote {
+        p {
+            &:first-child { margin-top: 0; }
+            &:last-child { margin-bottom: 0; }
+        }
+    }
+
+    form {
+        @import "forms";
+
+        &.invalid {
+            .wpcf7-response-output {
+                @extend .states;
+                @extend .warning;
+            }
+        }
+
+        &.sent {
+            .wpcf7-response-output {
+                @extend .states;
+                @extend .success;
+            }
+        }
+    }
+}
