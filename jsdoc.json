@@ -1,0 +1,41 @@
+{
+  "source": {
+    "include": ["html/javascripts"],
+    "includePattern": ".+\\.js(doc|x)?$",
+    "excludePattern": "(^|\\/|\\\\)_"
+  },
+  "opts": {
+    "destination": "./docs",
+    "recurse": true,
+    "template": "node_modules/docdash",
+    "encoding": "utf8"
+  },
+  "plugins": ["plugins/markdown"],
+  "templates": {
+    "cleverLinks": false,
+    "monospaceLinks": false,
+    "default": {
+      "outputSourceFiles": true,
+      "includeDate": false
+    },
+    "docdash": {
+      "static": true,
+      "sort": true,
+      "collapse": true,
+      "sections": [
+        "Classes",
+        "Modules",
+        "Namespaces",
+        "Interfaces",
+        "Global",
+        "Events",
+        "Mixins",
+        "Externals"
+      ],
+      "meta": {
+        "title": "Documentation",
+        "description": "Description de votre projet"
+      }
+    }
+  }
+}

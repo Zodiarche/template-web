@@ -1,265 +1,265 @@
 <?php
 
-//affiche toute les erreurs
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
+require 'library/vendor/autoload.php';
+
+// Affiche toutes les erreurs
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-//Production
-//error_reporting(0);
+// Production
+// error_reporting(0);
 
-class Functions {
-    var $mysqli;
+class Functions
+{
+  /**
+   * @var mysqli L'objet de connexion MySQLi.
+   */
+  public $mysqli;
 
-    function connexion($charset = 'utf8') {
-        $db_host = 'localhost';
-        $db_username = 'abuzz_aquiphoto';
-        $db_passwd = '{2Kio[d%;8T{';
-        $db_name = 'abuzz_aquiphoto';
+  /**
+   * @var string L'hôte de la base de données.
+   */
+  public $db_host = 'localhost';
 
-        $this->mysqli = new mysqli($db_host, $db_username, $db_passwd, $db_name);
+  /**
+   * @var string Le nom d'utilisateur pour la base de données.
+   */
+  public $db_username = 'root';
 
-        if($this->mysqli->connect_error) {
-            return FALSE;
-        }
+  /**
+   * @var string Le mot de passe pour la base de données.
+   */
+  public $db_passwd = '';
 
-        $this->mysqli->set_charset($charset);
-        return TRUE;
+  /**
+   * @var string Le nom de la base de données.
+   */
+  public $db_name = 'template';
+
+  /**
+   * Établit une connexion à la base de données MySQL.
+   *
+   * @param string $charset Le jeu de caractères à utiliser pour la connexion. Par défaut 'utf8'.
+   * @return bool TRUE si la connexion est réussie, FALSE sinon.
+   */
+  function connexion($charset = 'utf8')
+  {
+    $this->mysqli = new mysqli($this->db_host, $this->db_username, $this->db_passwd, $this->db_name);
+
+    if ($this->mysqli->connect_error) return false;
+    if (!$this->mysqli->set_charset($charset)) return false;
+
+    return true;
+  }
+
+  /**
+   * Obtient l'objet de connexion MySQLi.
+   *
+   * @return mysqli|null L'objet de connexion MySQLi si la connexion est établie, NULL sinon.
+   */
+  function getConnection()
+  {
+    return $this->mysqli;
+  }
+
+  /**
+   * Ferme la connexion à la base de données.
+   * @return void
+   */
+  function closeConnection()
+  {
+    if (!$this->mysqli) return;
+
+    $this->mysqli->close();
+  }
+
+  /**
+   * Échapper à une variable pour la rendre sûre pour les requêtes SQL.
+   *
+   * @param string $variable La variable à échapper.
+   * @return string La variable échappée.
+   */
+  function escapeVariable($variable)
+  {
+    if (isset($this->mysqli) && $this->mysqli instanceof mysqli) {
+      return $this->mysqli->real_escape_string($variable);
+    } else {
+      throw new Exception('La connexion mysqli n\'est pas définie ou invalide.');
+    }
+  }
+
+  /**
+   * Soumettre une requête à la base de données et renvoyer un tableau d'enregistrements.
+   *
+   * @param string $query La requête SQL à soumettre.
+   * @return array Un tableau d'objets représentant les enregistrements de la base de données.
+   */
+  function submitQuery($query)
+  {
+    $records = [];
+
+    if ($result = $this->mysqli->query($query)) {
+      while ($record = $result->fetch_object()) {
+        $records[] = $record;
+      }
+      $result->free();
     }
 
+    return $records;
+  }
 
-    function close_connexion() {
-        $this->mysqli->close();
+  /**
+   * Exécuter une requête qui ne renvoie aucun enregistrement (par exemple, INSERT, UPDATE, DELETE).
+   *
+   * @param string $query La requête SQL à exécuter.
+   * @return bool Retourne true si la requête a réussi, sinon false.
+   */
+  function executeQueryWithoutReturn($query)
+  {
+    return $this->mysqli->query($query);
+  }
+
+  /**
+   * Redirection vers la page spécifiée.
+   *
+   * @param string $page URL de la page vers laquelle rediriger.
+   * @return void
+   */
+  public function redirectTo($page)
+  {
+    echo "<script type='text/javascript'>window.location = '$page';</script>";
+  }
+
+  /**
+   * Déconnexion de l'utilisateur et redirection vers une page spécifiée.
+   *
+   * @param string $page URL de la page vers laquelle rediriger après déconnexion.
+   * @return void
+   */
+  function logoutAndRedirect($page)
+  {
+    session_destroy();
+
+    echo "<script type='text/javascript'>window.location = '$page';</script>";
+  }
+
+  /**
+   * Valider une adresse électronique.
+   *
+   * @param string $email L'adresse e-mail à vérifier.
+   * @return bool Retourne true si l'adresse e-mail est valide, sinon false.
+   */
+  function validate_email_address($email)
+  {
+    $pattern = '/^[\w.-]+@[\w.-]+\.[a-zA-Z]{2,6}$/';
+
+    return preg_match($pattern, $email) === 1;
+  }
+
+  /**
+   * Valider un numéro de téléphone.
+   *
+   * @param string $phone_number Le numéro de téléphone à vérifier.
+   * @return bool Retourne true si le numéro de téléphone est valide, sinon false.
+   */
+  function validate_phone_number($phone_number)
+  {
+    $pattern = '/^\+?[\d\s.-]{10,15}$/';
+
+    return preg_match($pattern, $phone_number) === 1;
+  }
+
+  /**
+   * Configure l'instance de PHPMailer avec les paramètres SMTP.
+   *
+   * @return PHPMailer Instance de PHPMailer configurée.
+   */
+  function configure_mailer()
+  {
+    $mail = new PHPMailer(true);
+
+    // Paramètres du serveur
+    $mail->isSMTP();
+    $mail->Host       = 'smtp.strato.com';
+    $mail->SMTPAuth   = true;
+    $mail->Username   = 'abuzz@agencebuzz.com';
+    $mail->Password   = 'LB*748p7N?vT:s.mbN/3';
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+    $mail->Port       = 465;
+    $mail->CharSet    = 'UTF-8';
+    $mail->setLanguage('fr', '/library/vendor/phpmailer/phpmailer/language/');
+    $mail->setFrom('abuzz@agencebuzz.com', 'Agence Buzz Santé');
+
+    return $mail;
+  }
+
+  /**
+   * Ajoute des destinataires à l'instance de PHPMailer.
+   *
+   * @param PHPMailer $mail Instance de PHPMailer.
+   * @param array $recipients Tableau des adresses e-mail des destinataires.
+   */
+  function add_recipients($mail, $recipients)
+  {
+    if (empty($recipients) || !is_array($recipients)) return;
+
+    foreach ($recipients as $recipient) {
+      $mail->addAddress($recipient);
     }
+  }
 
+  /**
+   * Ajoute des destinataires en copie à l'instance de PHPMailer.
+   *
+   * @param PHPMailer $mail Instance de PHPMailer.
+   * @param array $copies Tableau des adresses e-mail en copie.
+   * @return void
+   */
+  function add_copies($mail, $copies)
+  {
+    if (empty($copies) || !is_array($copies)) return;
 
-    function echapper_variable($variable) {
-        $element = $this->mysqli->real_escape_string($variable);
-        return $element;
+    foreach ($copies as $copie) {
+      $mail->addCC($copie);
     }
+  }
 
+  /**
+   * Définit le contenu et l'objet de l'e-mail.
+   *
+   * @param PHPMailer $mail Instance de PHPMailer.
+   * @param string $message Contenu du corps de l'e-mail.
+   * @param bool $is_user Indicateur pour déterminer l'objet.
+   * @return void
+   */
+  function set_email_content($mail, $message, $is_user)
+  {
+    $mail->isHTML(true);
+    $subject        = $is_user ? "Accusé de Réception" : "Nouveau Message";
+    $mail->Subject  = "[Agence Buzz Santé] $subject";
+    $mail->Body     = $message;
+  }
 
-    function soumettre_requete($requete) { //retourne un tableau d'enregistrement
-        if($resultat = $this->mysqli->query($requete)) {
-            $tableau = array();
-
-            while($enregistrement = $resultat->fetch_object()) {
-                $tableau[] = $enregistrement;
-            }
-
-            return $tableau;
-        }
-    }
-
-
-    function soumettre_requete_simple($requete) //retourne un seul enregistrement
-    {
-        if($resultat = $this->mysqli->query($requete))
-        {
-            $enregistrement = $resultat->fetch_object();
-
-            return $enregistrement;
-        }
-    }
-
-
-    function soumettre_requete_sans_retour($requete) //retourne true ou flase (insertion, update, suppression)
-    {
-        if($resultat = $this->mysqli->query($requete))
-        {
-            return $resultat;
-        }
-    }
-
-
-    function date_fr($date)
-    {
-        $date = explode('-',$date);
-        return ($date[2].'/'.$date[1].'/'.$date[0]);
-    }
-
-
-    function suppr_accents($chaine)
-    {
-        $accents = array('À','Á','Â','Ã','Ä','Å','Ç','È','É','Ê','Ë','Ì','Í','Î','Ï','Ò','Ó','Ô','Õ','Ö','Ù','Ú','Û','Ü','Ý','à','á','â','ã','ä','å','ç','è','é','ê','ë','ì','í','î','ï','ð','ò','ó','ô','õ','ö','ù','ú','û','ü','ý','ÿ');
-        $sans = array('A','A','A','A','A','A','C','E','E','E','E','I','I','I','I','O','O','O','O','O','U','U','U','U','Y','a','a','a','a','a','a','c','e','e','e','e','i','i','i','i','o','o','o','o','o','o','u','u','u','u','y','y');
-        return str_replace($accents, $sans, $chaine);
-    }
-
-
-    function redirection($page)
-    {
-?>
-<script type='text/javascript'>
-    window.location="<?php echo $page ?>";
-</script>
-<?php
-    }
-
-
-    function deconnexion($page)
-    {
-        session_destroy();
-
-?>
-<script type='text/javascript'>
-    window.location="<?php echo $page ?>";
-</script>
-<?php
-    }
-
-
-    function detection_navigateur()
-    {
-        if ( strpos( $_SERVER['HTTP_USER_AGENT'], 'Firefox' ) !== FALSE ) { $navigateur = "firefox"; }
-        elseif ( strpos($_SERVER['HTTP_USER_AGENT'], 'Chrome' ) !== FALSE ) { $navigateur = "chrome"; }
-        elseif ( strpos( $_SERVER['HTTP_USER_AGENT'], 'Opera' ) !== FALSE ) { $navigateur = "opera"; }
-        elseif ( strpos( $_SERVER['HTTP_USER_AGENT'], 'Safari' ) !== FALSE ) { $navigateur = "safari"; }
-        elseif ( strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 8' ) !== FALSE ) { $navigateur = "ie8"; }
-        elseif ( strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE' ) !== FALSE ) { $navigateur = "ie"; }
-        else { $navigateur = "navigateur non reconnu"; }
-
-        return $navigateur;
-    }
-
-
-    function couper_paragraphe($chaine, $nb)
-    {
-        //si le nombre de mot de la chaine est plus petit que le nombre souhaité
-        if(str_word_count($chaine) <= $nb) //les caractères accentués sont comptés comme espace
-        {
-            return $chaine;
-        }
-
-        $limit = $nb + 2;
-        $tableau = explode(" ", $chaine, $limit);
-
-        $paragraphe = "";
-
-        for($i = 0; $i <= $nb; $i++)
-        {
-            $paragraphe = $paragraphe.$tableau[$i]." ";
-        }
-
-        $paragraphe = $paragraphe."...";
-
-        return $paragraphe;
-    }
-
-
-    function alerte_erreur($site) {
-        $headers = 'MIME-Version: 1.0'."\n";
-        $headers .= 'Content-type: text/plain; charset="utf-8"'."\n";
-        $headers .= 'From: postmaster@agencebuzz.com'."\n";
-
-        $adresse = 'florent@agencebuzz.com';
-        $objet = 'ERREUR : '.$site.'';
-        $message = 'Bonjour,' ."\n". 'Une erreur est survenue sur le site '.$site.'' ."\n". 'La base de données est HS.';
-
-        mail($adresse, $objet, $message, $headers);
-    }
-
-
-    function verifier_adresse_email($adresse) {
-        $Syntaxe='#^[\w.-]+@[\w.-]+\.[a-zA-Z]{2,6}$#';
-
-        if(preg_match($Syntaxe,$adresse)) {
-            return true;
-        }
-
-        return false;
-    }
-
-
-    function alerte_message($page, $site) {
-        $headers = 'MIME-Version: 1.0'."\n";
-        $headers .= 'Content-type: text/plain; charset="utf-8"'."\n";
-        $headers .= 'From: postmaster@'.$site.''."\n";
-
-        $adresse = 'florent@agencebuzz.com';
-        $objet = 'Nouveau message : '.$site.'';
-        $message = 'Bonjour,' ."\n\n". 'Un nouveau message a été envoyé sur le site www.'.$site.'' ."\n". 'Ce message provient du formulaire de '. $page .'.';
-
-        mail($adresse, $objet, $message, $headers);
-    }
-
-
-    function envoyer_notification($prenom, $nom, $adresse_from, $adresse_to, $objet, $message) {
-        $headers = 'MIME-Version: 1.0' ."\n";
-        $headers .= 'Content-type: text/plain; charset="utf-8"' ."\n";
-        $headers .= 'From: '.ucfirst($prenom).' '.ucfirst($nom).' <'.$adresse_from.'>' ."\n";
-
-        mail($adresse_to, $objet, $message, $headers);
-    }
-
-    function envoyer_notification_simple( $sender, $adresse_from, $adresse_to, $objet, $message ) {
-        $headers = 'MIME-Version: 1.0' ."\n";
-        $headers .= 'Content-type: text/plain; charset="utf-8"' ."\n";
-        $headers .= 'From: '.$sender.' <'.$adresse_from.'>' ."\n";
-
-        mail($adresse_to, $objet, $message, $headers);
-    }
-
-    function envoyer_notification_html($prenom, $nom, $adresse_from, $adresse_to, $objet, $message) {
-        $headers = 'MIME-Version: 1.0' ."\n";
-        $headers .= 'Content-type: text/html; charset="utf-8"' ."\n";
-        $headers .= 'From: '.ucfirst($prenom).' '.ucfirst($nom).' <'.$adresse_from.'>' ."\n";
-
-        mail($adresse_to, $objet, $message, $headers);
-    }
-
-    function envoyer_notification_html_simple( $sender, $adresse_from, $adresse_to, $objet, $message) {
-        $headers = 'MIME-Version: 1.0' ."\n";
-        $headers .= 'Content-type: text/html; charset="utf-8"' ."\n";
-        $headers .= 'From: '.$sender.' <'.$adresse_from.'>' ."\n";
-
-        mail($adresse_to, $objet, $message, $headers);
-    }
-
-    function envoyer_notification_pj($prenom, $nom, $adresse_from, $adresse_to, $objet, $message, $dossier, $filename) {
-        //Génération du séparateur
-        $boundary = md5(uniqid(time()));
-
-        $headers = 'MIME-Version: 1.0' ."\n";
-        $headers .= "Content-Type: multipart/mixed; boundary=\"$boundary\" \n";
-        $headers .= "X-Priority: 1 \n";
-        $headers .= 'From: '.ucfirst($prenom).' '.ucfirst($nom).' <'.$adresse_from.'>' ."\n";
-        $headers .= " \n";
-
-        $message_texte = $message;
-
-        $path = $dossier.$filename;
-        $type_attachement = filetype($path);
-        $attachment = chunk_split(base64_encode(file_get_contents($path)));
-
-        $message  = "--$boundary \n";
-        $message .= "Content-Type: text/plain; charset=\"utf-8\" \n";
-        $message .= "Content-Transfer-Encoding:8bit \n";
-        $message .= "\n";
-        $message .= $message_texte;
-        $message .= "\n";
-        $message .= "--$boundary \n";
-        $message .= "Content-Type: $type_attachement; name=\"$filename\" \n";
-        $message .= "Content-Transfer-Encoding: base64 \n";
-        $message .= "Content-Disposition: attachment; filename=\"$filename\" \n";
-        $message .= "\n";
-        $message .= $attachment."\n";
-        $message .= "\n";
-        $message .= "--".$boundary."--";
-
-        mail($adresse_to, $objet, $message, $headers);
-    }
-
-
-    function anti_mail_spam($adresse)
-    {
-        $encoded = '';
-
-        for ($i=0; $i < strlen($adresse); $i++)
-        {
-            $encoded .= '&#'.ord(substr($adresse,$i)).';';
-        }
-
-        return $encoded;
-    }
+  /**
+   * Envoie un e-mail en utilisant PHPMailer.
+   *
+   * @param array $recipient Tableau des adresses e-mail des destinataires.
+   * @param array $copie Tableau des adresses e-mail en copie.
+   * @param string $message Contenu du corps de l'e-mail.
+   * @param bool $is_user Indicateur pour déterminer l'objet.
+   * @return void
+   */
+  function send_mail($recipient, $copie, $message, $is_user)
+  {
+    $mail = $this->configure_mailer();
+    $this->add_recipients($mail, $recipient);
+    $this->add_copies($mail, $copie);
+    $this->set_email_content($mail, $message, $is_user);
+    $mail->send();
+  }
 }
