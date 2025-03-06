@@ -1,6 +1,15 @@
 node_modules/
-dist/
 
 # SCSS SASS Cache
 *.scssc
 *.sassc
+
+# Utils Benjamin
+cmd.bat
+vscode.bat
+build.bat
+
+# Template Benjamin
+template.php
+swiper.php
+sandbox.php
