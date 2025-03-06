@@ -1,10 +1,6 @@
 import { animations } from "./animations.js";
 
 /**
- * @module AnimeJS/Main
- */
-
-/**
  * Initialise AnimeJS en observant les éléments avec l'attribut data-animation.
  */
 const initializeAnimeJS = () => {

@@ -1,8 +1,4 @@
 /**
- * @module SwiperJS/ToggleClasses
- */
-
-/**
  * Active les éléments Swiper en ajoutant les classes actives et en supprimant les classes inactives.
  * @param {Element} swiperElement - L'élément Swiper à activer.
  */

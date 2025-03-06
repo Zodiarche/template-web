@@ -5,10 +5,6 @@ import {
 } from "./toggle-classes.js";
 
 /**
- * @module SwiperJS/Utils
- */
-
-/**
  * Met à jour les classes des éléments Swiper en fonction de la largeur d'écran.
  * @param {string} selector - Le sélecteur CSS de l'élément Swiper.
  * @param {boolean} isSwiperActive - Indique si Swiper doit être actif.

@@ -1,7 +1,3 @@
-/**
- * @module ShowHide
- */
-
 let url = new URL(window.location.href);
 
 /**

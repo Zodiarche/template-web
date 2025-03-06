@@ -15,4 +15,3 @@ import "./scroll-to.js";
 import "./read-more.js";
 import "./show-hide.js";
 import "./toggle-nav-button-contact.js";
-import "./global.js";

@@ -1,8 +1,4 @@
 /**
- * @module TarteAuCitron/Services
- */
-
-/**
  * Fonction appelée lorsque le cookie n'a pas encore été accepté.
  */
 export const recaptchaFallback = () => {

@@ -1,11 +1,14 @@
 module.exports = function (grunt) {
-  const autoprefixer = require("autoprefixer");
-
   grunt.initConfig({
     watch: {
       sass: {
         files: ["sass/**/*.{scss,sass}"],
         tasks: ["sass:dist", "postcss:dist"],
+      },
+
+      js: {
+        files: ["javascripts/**/*.js"],
+        tasks: ["clean:js", "concat", "uglify"],
       },
     },
 
@@ -13,15 +16,11 @@ module.exports = function (grunt) {
       dist: {
         options: {
           style: "compressed",
-          compass: true,
         },
 
-        // 'destination': 'source',
         files: {
+          //                    'wordpress/wp-content/themes/a2f-2024/stylesheets/main.css': 'sass/main.scss',
           "html/stylesheets/main.css": "sass/main.scss",
-          //  'html/stylesheets/underconstruction.css': 'sass/underconstruction.scss',
-          // "wordpress/wp-content/themes/projectName/stylesheets/main.css":
-          //   "sass/main.scss",
         },
       },
     },
@@ -30,29 +29,98 @@ module.exports = function (grunt) {
       options: {
         map: true,
         processors: [
-          autoprefixer({
+          require("autoprefixer")({
             overrideBrowserslist: ["defaults"],
           }),
         ],
       },
 
       dist: {
+        //                src: 'wordpress/wp-content/themes/a2f-2024/stylesheets/main.css',
         src: "html/stylesheets/main.css",
       },
     },
+
+    cwebp: {
+      dynamic: {
+        options: {
+          q: 100,
+        },
+
+        files: [
+          {
+            expand: true,
+            cwd: "wordpress/wp-content/themes/a2f-2024/images/",
+            src: ["**/*.{png,jpg,jpeg}"],
+            dest: "wordpress/wp-content/themes/a2f-2024/images/",
+          },
+        ],
+      },
+    },
+
+    clean: {
+      js: [
+        "wordpress/wp-content/themes/a2f-2024/javascripts/002_combined/combined.js",
+        "wordpress/wp-content/themes/a2f-2024/javascripts/002_combined/combined.min.js",
+      ],
+    },
+
+    concat: {
+      dist: {
+        src: [
+          "wordpress/wp-content/themes/a2f-2024/javascripts/**/*.js",
+          "!wordpress/wp-content/themes/a2f-2024/javascripts/000_modules/**/*.js",
+          "!wordpress/wp-content/themes/a2f-2024/javascripts/002_tarteaucitron/**",
+          "!wordpress/wp-content/themes/a2f-2024/javascripts/index.js",
+        ],
+        dest: "wordpress/wp-content/themes/a2f-2024/javascripts/002_combined/combined.js",
+      },
+    },
+
+    uglify: {
+      dist: {
+        files: {
+          "wordpress/wp-content/themes/a2f-2024/javascripts/002_combined/combined.min.js":
+            [
+              "wordpress/wp-content/themes/a2f-2024/javascripts/002_combined/combined.js",
+            ],
+        },
+      },
+    },
+
+    // htmlmin: {
+    //   dist: {
+    //     options: {
+    //       removeComments: true,
+    //       collapseWhitespace: true,
+    //     },
+
+    //     tasks: ['clean:php'],
+
+    //     files: {
+    //       'html/index.php': 'html/qr-code-contact.php',
+    //     },
+    //   },
+    // },
   });
 
-  // https://github.com/gruntjs/grunt-contrib-sass
   grunt.loadNpmTasks("grunt-contrib-sass");
-
-  // https://github.com/postcss/autoprefixer
-  //    grunt.loadNpmTasks('grunt-postcss');
-
-  // https://github.com/C-Lodder/grunt-postcss
   grunt.loadNpmTasks("@lodder/grunt-postcss");
-
-  // https://github.com/gruntjs/grunt-contrib-watch /// http://blog.grayghostvisuals.com/grunt/image-optimization/
   grunt.loadNpmTasks("grunt-contrib-watch");
+  grunt.loadNpmTasks("grunt-cwebp");
+  grunt.loadNpmTasks("grunt-contrib-uglify");
+  grunt.loadNpmTasks("grunt-contrib-concat");
+  grunt.loadNpmTasks("grunt-contrib-clean");
+  // grunt.loadNpmTasks('grunt-contrib-htmlmin');
 
-  grunt.registerTask("default", ["sass:dist", "postcss:dist", "watch"]);
+  grunt.registerTask("default", [
+    "sass:dist",
+    "postcss:dist",
+    //        'cwebp',
+    //        'clean:js',
+    //        'concat',
+    //        'uglify',
+    // 'htmlmin',
+    "watch",
+  ]);
 };

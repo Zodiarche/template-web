@@ -1,8 +1,4 @@
 /**
- * @module Navigation/BurgerMenu
- */
-
-/**
  * Initialise le menu burger en ajoutant des écouteurs d'événements sur les éléments nécessaires.
  */
 const initializeBurgerMenu = () => {

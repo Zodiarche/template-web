@@ -1,10 +1,6 @@
 import { toggleBtn } from "../read-more.js";
 
 /**
- * @module SwiperJS/Events
- */
-
-/**
  * Réinitialise les boutons "Lire la suite" dans les diapositives d'un carrousel Swiper.
  * @param {Swiper} swiperInstance - L'instance de Swiper.
  */

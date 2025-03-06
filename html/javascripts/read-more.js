@@ -1,8 +1,4 @@
 /**
- * @module ReadMore
- */
-
-/**
  * Initialise les boutons "Lire la suite" pour qu'ils puissent afficher ou masquer du contenu supplémentaire.
  */
 const initializeReadMore = () => {

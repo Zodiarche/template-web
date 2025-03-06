@@ -1,9 +1,5 @@
 import { recaptchaFallback } from "./services.js";
 
-/**
- * @module TarteAuCitron/Main
- */
-
 tarteaucitron.init({
   privacyUrl: "",
   hashtag: "#tarteaucitron",

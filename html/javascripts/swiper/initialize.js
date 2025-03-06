@@ -1,8 +1,4 @@
 /**
- * @module SwiperJS/Initialization
- */
-
-/**
  * Initialise une instance de Swiper avec les paramètres spécifiés.
  * @param {string} selector - Le sélecteur CSS de l'élément Swiper.
  * @param {Object.<string, string|boolean|number>} params - Un objet contenant tous les paramètres du Swiper.

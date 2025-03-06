@@ -1,8 +1,4 @@
 /**
- * @module Navigation/Navigation
- */
-
-/**
  * Initialise la navigation en ajoutant des écouteurs d'événements sur les liens du menu.
  */
 const initializeNavigation = () => {

@@ -1,8 +1,4 @@
 /**
- * @module AnimeJS/Animations
- */
-
-/**
  * Un ensemble d'animations définies utilisant la bibliothèque Anime.js.
  */
 export const animations = {

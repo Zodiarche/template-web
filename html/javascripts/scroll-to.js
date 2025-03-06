@@ -1,8 +1,4 @@
 /**
- * @module ScrollTo
- */
-
-/**
  * Initialise le défilement ajusté en fonction de la hauteur de l'en-tête.
  * @throws {Error} Si la hauteur de l'en-tête ou les éléments de lien ne peuvent pas être trouvés.
  */

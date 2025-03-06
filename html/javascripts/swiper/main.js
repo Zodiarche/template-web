@@ -1,14 +1,9 @@
 import * as utils from "./utils.js";
-import { resetReadMoreButtons } from "./events.js";
 
 export let swiperTemplateNavigation = null;
 export let swiperTemplatePagination = null;
 export let swiperTemplateAutoplay = null;
 export let swiperTemplateScrollbar = null;
-
-/**
- * @module SwiperJS/Main
- */
 
 /**
  * Gère l'initialisation, la destruction et les changements d'état d'une instance de Swiper.
